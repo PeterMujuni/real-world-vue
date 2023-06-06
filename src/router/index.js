@@ -16,9 +16,13 @@ const router = createRouter({
       component: EventListView
     },
     {
-      path: '/about',
+      path: '/about-us',
       name: 'about',
       component: AboutView
+    },
+    {
+      path: '/about',
+      redirect: {name: 'about'}
     },
     {
       path: '/events/:id',
@@ -43,7 +47,13 @@ const router = createRouter({
         }
       ]
     },
-    
+    {
+      // redirects childrens
+      path: '/event/:afterEvent(.*)',
+      redirect: to => {
+        return {path: '/events/' + to.params.afterEvent}
+      }
+    }
   ]
 })
 

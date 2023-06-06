@@ -12,7 +12,6 @@ const event = ref(null)
 onMounted(() => {
     EventService.getEvent(props.id)
   .then((response) => {
-    console.log("id: ", props.id);
     event.value = response.data
   })
   .catch((error) => {
