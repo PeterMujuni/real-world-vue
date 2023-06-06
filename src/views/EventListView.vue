@@ -18,7 +18,6 @@ const totalEvents = ref(0)
 // COMPUTES
 const hasNextPage = computed(() => {
   let totalPages = Math.ceil(totalEvents.value / 2)
-  console.log(totalPages)
   return props.page < totalPages
 })
 
@@ -31,7 +30,6 @@ onMounted(() => {
       .then((response) => {
         events.value = response.data
         totalEvents.value = response.headers['x-total-count']
-        console.log(totalEvents);
       })
       .catch((error) => {
         console.log(error)
