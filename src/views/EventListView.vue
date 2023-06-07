@@ -1,10 +1,8 @@
 <script setup>
-import { ref, onMounted, watchEffect, computed } from 'vue'
+import { inject, computed } from 'vue'
 import EventCard from '@/components/EventCard.vue'
-import EventService from '@/services/EventService.'
-import { useRouter } from 'vue-router';
 
-const router = useRouter()
+const GStore = inject('GStore')
 
 // PROPS
 const props = defineProps({
@@ -14,41 +12,26 @@ const props = defineProps({
 })
 
 // DATA
-const events = ref(null)
-const totalEvents = ref(0)
 
 // METHODS
 
 // COMPUTES
 const hasNextPage = computed(() => {
-  let totalPages = Math.ceil(totalEvents.value / 2)
+  let totalPages = Math.ceil(GStore.totalEvents / 2)
   return props.page < totalPages
 })
 
 // LIFE CYCLES
 
-onMounted(() => {
-  watchEffect(() => {
-    events.value = null
-    EventService.getEvents(2, props.page)
-      .then((response) => {
-        events.value = response.data
-        totalEvents.value = response.headers['x-total-count']
-      })
-      .catch(() => {
-        router.push({name: 'network-error'})
-      })
-  })
-})
 </script>
 
 <template>
   <h1>Events For Good</h1>
-  <div class="events" v-if="events">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
+  <div class="events" v-if="GStore.events">
+    <EventCard v-for="event in GStore.events" :key="event.id" :event="event" />
     <div class="pagination">
       <router-link
-      id="page-prev"
+        id="page-prev"
         :to="{ name: 'event-list', query: { page: page - 1 } }"
         rel="prev"
         v-if="page != 1"
@@ -56,7 +39,7 @@ onMounted(() => {
       >
 
       <router-link
-      id="page-next"
+        id="page-next"
         :to="{ name: 'event-list', query: { page: page + 1 } }"
         rel="next"
         v-if="hasNextPage"
